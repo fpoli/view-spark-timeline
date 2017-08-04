@@ -1,0 +1,14 @@
+*.egg
+*.py[cod]
+*.so
+*~
+*.log
+*.calltree
+*.profile
+*.egg-info/
+__pycache__/
+.vscode/
+build/
+dist/
+data/
+spark-logs/

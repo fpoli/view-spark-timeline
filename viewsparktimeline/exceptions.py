@@ -1,0 +1,2 @@
+class CliException(Exception):
+    pass
