@@ -3,7 +3,7 @@ View Spark Timeline
 
 Command line application to visualize the timeline of Spark executions, reading Spark's log files.
 
-A foundamental assumption is that all the executors are added before the Spark application submit jobs.
+A fundamental assumption is that all the executors are added before the Spark application submit jobs.
 That is, this tool does not support dynamic scaling.
 
 
