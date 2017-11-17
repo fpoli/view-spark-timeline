@@ -6,6 +6,8 @@ Command line application to visualize the timeline of Spark executions, reading 
 A fundamental assumption is that all the executors are added before the Spark application submit jobs.
 That is, this tool does not support dynamic scaling.
 
+.. image:: docs/example-timeline.svg
+
 
 Installation
 ------------
@@ -39,8 +41,6 @@ Output:
     Saving SVG...
 
 Produced image: `docs/example-timeline.svg <https://github.com/fpoli/view-spark-timeline/blob/master/docs/example-timeline.svg>`_
-
-.. image:: docs/example-timeline.svg
 
 
 Image explanation
