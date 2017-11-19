@@ -6,6 +6,8 @@ Command line application to visualize the timeline of Spark executions, reading 
 A fundamental assumption is that all the executors are added before the Spark application submit jobs.
 That is, this tool does not support dynamic scaling.
 
+Can you spot the bottleneck?
+
 .. image:: docs/example-timeline.svg
 
 
