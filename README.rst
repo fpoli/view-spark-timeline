@@ -1,10 +1,10 @@
 View Spark Timeline
 ===================
 
-Command line application to visualize the timeline of Apache Spark executions, reading Spark's log files.
+.. image:: https://travis-ci.org/fpoli/view-spark-timeline.svg?branch=master
+    :target: https://travis-ci.org/fpoli/view-spark-timeline
 
-A fundamental assumption is that all the executors are added before the Spark application submits any job.
-That is, this tool does not support dynamic scaling.
+Command line application to visualize the timeline of Apache Spark executions, reading Spark's log files.
 
 Can you spot the bottleneck from the following visualization?
 
@@ -28,9 +28,11 @@ It is then useful to inspect the task using the standard Spark UI.
 Installation
 ------------
 
+This project requires Python 3.
+
 .. code-block:: bash
 
-    pip install view-spark-timeline
+    pip3 install view-spark-timeline
 
 
 Example
