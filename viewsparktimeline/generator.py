@@ -1,4 +1,3 @@
-import sys
 import random
 from heapq import heappush, heappop
 from viewsparktimeline.utils import read_events
@@ -173,7 +172,6 @@ def generate(events_file_path, output_file_path, time_uncertainty_ms):
             finish_time = int(task_info["Finish Time"])
             task_duration = finish_time - launch_time
             start_time = launch_time - min_time
-            end_time = finish_time - min_time
 
             output_image.draw_task(
                 core_id,

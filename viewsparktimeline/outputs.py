@@ -1,5 +1,5 @@
-import svgwrite
 from colorsys import hsv_to_rgb
+import svgwrite
 from viewsparktimeline.utils import transition3
 
 
@@ -28,16 +28,15 @@ class AbstractOutputImage:
         """
         if task_end_reason != "Success":
             return (0, 0, 0)
-        else:
-            r, g, b = hsv_to_rgb(*transition3(
-                min(task_duration, self.slow_task_duration),
-                self.slow_task_duration,
-                self.fast_task_color,
-                self.slow_task_color
-            ))
-            return (r * 255, g * 255, b * 255)
+        r, g, b = hsv_to_rgb(*transition3(
+            min(task_duration, self.slow_task_duration),
+            self.slow_task_duration,
+            self.fast_task_color,
+            self.slow_task_color
+        ))
+        return (r * 255, g * 255, b * 255)
 
-    def draw_task(self, x, y, task_width, task_color):
+    def draw_task(self, core_id, start_time, task_duration, task_end_reason, task_description):
         """Draw one more task on the image.
         """
         raise NotImplementedError
@@ -92,15 +91,15 @@ class SvgOutput(AbstractOutputImage):
     def save(self):
         """Save the image to disk.
         """
-        if False:
-            # Enable pan and zoom actions in a browser.
-            # TODO: Embed JS in SVG, to avoid having an external dependency.
-            self.dwg.add(self.dwg.script("../lib/svgpan.js"))
-        else:
-            self.dwg.update({
-                "preserveAspectRatio": "none",
-                "viewBox": "0 0 {} {}".format(self.total_width, self.total_height)
-            })
+
+        # Enable pan and zoom actions in a browser.
+        # TODO: Embed JS in SVG, to avoid having an external dependency.
+        #self.dwg.add(self.dwg.script("../lib/svgpan.js"))
+
+        self.dwg.update({
+            "preserveAspectRatio": "none",
+            "viewBox": "0 0 {} {}".format(self.total_width, self.total_height)
+        })
 
         print("SVG size: {} {}".format(self.total_width, self.total_height))
         print("Saving SVG...")

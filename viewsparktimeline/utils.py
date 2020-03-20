@@ -1,5 +1,5 @@
-import ujson as json
 import mmap
+import ujson as json
 
 
 def read_events(events_file_path):
