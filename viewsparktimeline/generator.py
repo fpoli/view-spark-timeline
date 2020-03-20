@@ -6,49 +6,63 @@ from viewsparktimeline.outputs import SvgOutput
 from viewsparktimeline.exceptions import CliException
 
 
-def anticipate_task_end(time_amount, events):
+def anticipate_task_end(time_uncertainty_ms, events):
+    """Sort by time an almost-sorted stream of Spark events.
+
+    The `SparkListenerTaskEnd` are slightly anticipated to handle cases in which
+    tasks seem to overlap due to an imprecision in the logged times.
+
+    Arguments:
+    * `time_uncertainty_ms` is the maximum allowed imprecision in the times.
+    * `events` is a stream of Spark events of type dict.
+    """
     timeline_buffer = []
     max_seen_time = 0
     start_time_of_task = {}
     for data in events:
+        # Add a new event to the timeline_buffer
         if data["Event"] == "SparkListenerTaskStart":
             task_info = data["Task Info"]
             task_id = int(task_info["Task ID"])
             launch_time = int(task_info["Launch Time"])
+            max_seen_time = max(max_seen_time, launch_time)
             start_time_of_task[task_id] = launch_time
+            # The tuple contains `task_id` to compare tasks that start at the same time
             heappush(timeline_buffer, (launch_time, 0, task_id, data))
         elif data["Event"] == "SparkListenerTaskEnd":
             task_info = data["Task Info"]
             task_id = int(task_info["Task ID"])
             finish_time = int(task_info["Finish Time"])
-            current_task_start_time = start_time_of_task.pop(task_id, None)
+            max_seen_time = max(max_seen_time, finish_time)
+            current_task_start_time = start_time_of_task.pop(task_id)
+            # Anticipate the end by `time_uncertainty_ms`
             anticipated_finish_time = max(
-                finish_time - time_amount,
+                finish_time - time_uncertainty_ms,
                 current_task_start_time
             )
             heappush(timeline_buffer, (anticipated_finish_time, 1, task_id, data))
         else:
             continue
 
-        # A new event has been added to the buffer
-        max_time_in_buffer = timeline_buffer[-1][0]
+        # Yeal all elements more than `time_uncertainty_ms` in the past
         min_time_in_buffer = timeline_buffer[0][0]
-
-        while max_time_in_buffer - min_time_in_buffer >= time_amount:
+        while max_seen_time - min_time_in_buffer >= time_uncertainty_ms:
             yield heappop(timeline_buffer)[3]
             if timeline_buffer:
                 min_time_in_buffer = timeline_buffer[0][0]
             else:
                 break
 
+    # Drain the timeline_buffer at the end
     while timeline_buffer:
         yield heappop(timeline_buffer)[3]
 
 
-def generate(events_file_path, output_file_path, time_uncertainty_ms, random_seed=None):
-    if random_seed is not None:
-        random.seed(random_seed)
+def generate(events_file_path, output_file_path, time_uncertainty_ms):
+    """Analyze a Spark log file and generate an SVG visualization.
 
+    `time_uncertainty_ms` is the maximum allowed time imprecision in the log.
+    """
     total_tasks = 0
     total_cores = 0
     min_time = None
@@ -58,6 +72,7 @@ def generate(events_file_path, output_file_path, time_uncertainty_ms, random_see
     cumulative_task_duration = 0
     executor_free_cores = {}
 
+    # First pass: count the number of total cores and compute other statistics
     for data in read_events(events_file_path):
         if data["Event"] == "SparkListenerExecutorAdded":
             executor_id = data["Executor ID"]
@@ -98,6 +113,7 @@ def generate(events_file_path, output_file_path, time_uncertainty_ms, random_see
     print("Max task duration: {:.1f}s".format(max_task_duration / 1000))
     print("Cluster utilization: {:.2f}%".format(cluster_utilization * 100))
 
+    # Second pass: generate the SVG visualization
     print("Drawing events...")
     output_image = SvgOutput(
         output_file_path,

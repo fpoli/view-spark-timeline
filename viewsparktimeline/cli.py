@@ -1,5 +1,6 @@
 import sys
 import argparse
+import random
 from viewsparktimeline import __version__, __prog_name__
 from viewsparktimeline.generator import generate
 from viewsparktimeline.exceptions import CliException
@@ -46,11 +47,11 @@ def main():
         print("{} version {}".format(__prog_name__, __version__))
         return
     try:
+        random.seed(42)
         generate(
             args.input_log,
             args.output_image,
-            args.time_uncertainty,
-            42
+            args.time_uncertainty
         )
     except CliException as e:
         print(e)
