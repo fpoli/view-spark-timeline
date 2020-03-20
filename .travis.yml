@@ -1,0 +1,22 @@
+sudo: false
+
+language: python
+
+python:
+  - 3.5
+  - 3.6
+  - 3.7
+
+script:
+  - pip install .
+  - mkdir out
+  - view-spark-timeline -i examples/application_1472176676028_407508_1 -o out/application_1472176676028_407508_1.svg --time-uncertainty 100
+  - view-spark-timeline -i examples/application_1472176676028_544163_1 -o out/application_1472176676028_544163_1.svg --time-uncertainty 100
+  - view-spark-timeline -i examples/application_1472176676028_544172_1 -o out/application_1472176676028_544172_1.svg --time-uncertainty 100
+  - view-spark-timeline -i examples/application_1472176676028_544282_1 -o out/application_1472176676028_544282_1.svg --time-uncertainty 100
+  - view-spark-timeline -i examples/application_1472176676028_544292_1 -o out/application_1472176676028_544292_1.svg --time-uncertainty 100
+  - view-spark-timeline -i examples/application_1472176676028_550039_1 -o out/application_1472176676028_550039_1.svg --time-uncertainty 100
+  - view-spark-timeline -i examples/application_1472176676028_555209_1 -o out/application_1472176676028_555209_1.svg --time-uncertainty 1000
+  - view-spark-timeline -i examples/application_1472176676028_555221_1 -o out/application_1472176676028_555221_1.svg --time-uncertainty 1000
+  - view-spark-timeline -i examples/application_1472176676028_555247_1 -o out/application_1472176676028_555247_1.svg --time-uncertainty 500
+  - view-spark-timeline -i examples/application_1472176676028_555248_1 -o out/application_1472176676028_555248_1.svg --time-uncertainty 100
