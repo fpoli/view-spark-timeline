@@ -37,7 +37,7 @@ setup(
 
     install_requires = [
         "svgwrite==1.1.11",
-        "ujson==1.35"
+        "ujson==5.4.0"
     ],
     extras_require = {
         "dev": [
